@@ -27,5 +27,32 @@ function register(ctx: ContentScriptContext) {
     throw new Error("Container element is not found");
   }
 
+  // MutationObserverの設定
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (
+        mutation.type === "attributes" &&
+        mutation.attributeName === "class"
+      ) {
+        const target = mutation.target as HTMLElement;
+        const oldClassList = (mutation.oldValue || "").split(" ");
+        if (
+          oldClassList.includes("result-streaming") &&
+          !target.classList.contains("result-streaming")
+        ) {
+          console.log("ストリーミングが完了しました");
+        }
+      }
+    });
+  });
+
+  // 監視の開始
+  observer.observe(container, {
+    attributes: true,
+    subtree: true,
+    attributeFilter: ["class"],
+    attributeOldValue: true, // 変更前の値を取得するために必要
+  });
+
   console.log("Hello content.", container);
 }
