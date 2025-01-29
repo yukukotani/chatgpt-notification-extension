@@ -4,6 +4,9 @@ import { defineConfig } from "wxt";
 export default defineConfig({
   extensionApi: "chrome",
   modules: ["@wxt-dev/module-react"],
+  manifest: {
+    permissions: ["notifications", "tabs"],
+  },
   runner: {
     startUrls: ["https://chatgpt.com/"],
     chromiumArgs: ["--user-data-dir=./.wxt/chrome-data"],

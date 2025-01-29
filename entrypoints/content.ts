@@ -1,4 +1,5 @@
 import { type ContentScriptContext } from "wxt/client";
+import { browser } from "wxt/browser";
 
 const watchPattern = new MatchPattern("https://chatgpt.com/c/*");
 
@@ -23,8 +24,6 @@ export default defineContentScript({
 });
 
 function register(ctx: ContentScriptContext) {
-  console.log("register");
-
   const [container] = document.getElementsByClassName("@container/thread");
   if (container == null) {
     throw new Error("Container element is not found");
@@ -32,7 +31,7 @@ function register(ctx: ContentScriptContext) {
 
   // MutationObserverの設定
   const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
+    mutations.forEach(async (mutation) => {
       if (
         mutation.type === "attributes" &&
         mutation.attributeName === "class"
@@ -43,7 +42,15 @@ function register(ctx: ContentScriptContext) {
           oldClassList.includes("result-streaming") &&
           !target.classList.contains("result-streaming")
         ) {
-          console.log("ストリーミングが完了しました");
+          if (document.hasFocus()) {
+            return;
+          }
+          try {
+            await browser.runtime.sendMessage("done-streaming");
+            console.log("ストリーミングが完了しました");
+          } catch (e) {
+            console.error("失敗", e);
+          }
         }
       }
     });
