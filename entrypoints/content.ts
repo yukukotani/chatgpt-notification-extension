@@ -7,13 +7,16 @@ export default defineContentScript({
   main(ctx) {
     console.log("Running content script");
 
+    let cleanup: () => void;
     if (watchPattern.includes(window.location.toString())) {
-      register(ctx);
+      cleanup = register(ctx);
     }
 
     ctx.addEventListener(window, "wxt:locationchange", ({ newUrl }) => {
+      cleanup?.();
+
       if (watchPattern.includes(newUrl)) {
-        register(ctx);
+        cleanup = register(ctx);
       }
     });
   },
@@ -54,5 +57,8 @@ function register(ctx: ContentScriptContext) {
     attributeOldValue: true, // 変更前の値を取得するために必要
   });
 
-  console.log("Hello content.", container);
+  return () => {
+    console.log("cleanup");
+    observer.disconnect();
+  };
 }
