@@ -3,8 +3,16 @@ import { browser } from "wxt/browser";
 export default defineBackground(() => {
   const NotificationTabMap: Record<string, number> = {};
 
-  browser.runtime.onMessage.addListener((msg, sender) => {
+  browser.runtime.onMessage.addListener(async (msg, sender) => {
     if (msg != "done-streaming") {
+      return;
+    }
+
+    // 通知設定を確認
+    const { notificationsEnabled = true } = await browser.storage.sync.get(
+      "notificationsEnabled"
+    );
+    if (!notificationsEnabled) {
       return;
     }
 

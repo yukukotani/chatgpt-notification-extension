@@ -7,7 +7,7 @@ export default defineConfig({
   modules: ["@wxt-dev/module-react", "@wxt-dev/auto-icons"],
   manifest: {
     name: "ChatGPT Notification",
-    permissions: ["notifications", "tabs"],
+    permissions: ["notifications", "tabs", "storage"],
   },
   autoIcons: {
     baseIconPath: "./public/icon.png",
