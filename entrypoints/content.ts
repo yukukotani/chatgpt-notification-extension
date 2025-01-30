@@ -29,6 +29,9 @@ function register(ctx: ContentScriptContext) {
     throw new Error("Container element is not found");
   }
 
+  // 通知音の準備
+  const notificationSound = new Audio(browser.runtime.getURL("/sound.mp3"));
+
   // MutationObserverの設定
   const observer = new MutationObserver((mutations) => {
     mutations.forEach(async (mutation) => {
@@ -46,8 +49,17 @@ function register(ctx: ContentScriptContext) {
             return;
           }
           try {
-            await browser.runtime.sendMessage("done-streaming");
-            console.log("ストリーミングが完了しました");
+            // 通知設定を確認
+            const { notificationsEnabled = true } =
+              await browser.storage.sync.get("notificationsEnabled");
+            if (notificationsEnabled) {
+              // 通知音を再生
+              await notificationSound.play().catch((e) => {
+                console.error("通知音の再生に失敗しました", e);
+              });
+              await browser.runtime.sendMessage("notification");
+            }
+            console.log("通知を送信しました");
           } catch (e) {
             console.error("失敗", e);
           }

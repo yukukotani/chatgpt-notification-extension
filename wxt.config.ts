@@ -8,6 +8,12 @@ export default defineConfig({
   manifest: {
     name: "ChatGPT Notification",
     permissions: ["notifications", "tabs", "storage"],
+    web_accessible_resources: [
+      {
+        resources: ["sound.mp3"],
+        matches: ["<all_urls>"],
+      },
+    ],
   },
   autoIcons: {
     baseIconPath: "./public/icon.png",
