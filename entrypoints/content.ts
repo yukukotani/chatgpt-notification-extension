@@ -1,5 +1,6 @@
 import { type ContentScriptContext } from "wxt/client";
 import { browser } from "wxt/browser";
+import { notificationSettings } from "@/libs/storage";
 
 const watchPattern = new MatchPattern("https://chatgpt.com/c/*");
 
@@ -29,8 +30,10 @@ async function notify(notificationSound: HTMLAudioElement) {
     return;
   }
 
-  const { notificationsEnabled = true, soundEnabled = true } =
-    await browser.storage.sync.get(["notificationsEnabled", "soundEnabled"]);
+  const [notificationsEnabled, soundEnabled] = await Promise.all([
+    notificationSettings.notifications.getValue(),
+    notificationSettings.sound.getValue(),
+  ]);
 
   try {
     if (soundEnabled) {

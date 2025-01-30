@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { browser } from "wxt/browser";
+import { notificationSettings } from "@/libs/storage";
 import "./App.css";
 
 type Settings = {
@@ -46,25 +46,25 @@ function App() {
   });
 
   useEffect(() => {
-    browser.storage.sync
-      .get(["notificationsEnabled", "soundEnabled"])
-      .then(
-        (result: {
-          notificationsEnabled?: boolean;
-          soundEnabled?: boolean;
-        }) => {
-          setSettings({
-            notificationsEnabled: result.notificationsEnabled ?? true,
-            soundEnabled: result.soundEnabled ?? true,
-          });
-          setLoading(false);
-        }
-      );
+    Promise.all([
+      notificationSettings.notifications.getValue(),
+      notificationSettings.sound.getValue(),
+    ]).then(([notificationsEnabled, soundEnabled]) => {
+      setSettings({
+        notificationsEnabled,
+        soundEnabled,
+      });
+      setLoading(false);
+    });
   }, []);
 
   const handleUpdate = async (key: keyof Settings, value: boolean) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
-    await browser.storage.sync.set({ [key]: value });
+    if (key === "notificationsEnabled") {
+      await notificationSettings.notifications.setValue(value);
+    } else {
+      await notificationSettings.sound.setValue(value);
+    }
   };
 
   if (loading) {
