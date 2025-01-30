@@ -23,6 +23,28 @@ export default defineContentScript({
   },
 });
 
+async function notify(notificationSound: HTMLAudioElement) {
+  if (document.hasFocus()) {
+    // タブがアクティブなら通知しない
+    return;
+  }
+
+  const { notificationsEnabled = true, soundEnabled = true } =
+    await browser.storage.sync.get(["notificationsEnabled", "soundEnabled"]);
+
+  try {
+    if (soundEnabled) {
+      await notificationSound.play();
+    }
+    if (notificationsEnabled) {
+      await browser.runtime.sendMessage("notification");
+    }
+    console.log("通知を送信しました");
+  } catch (e) {
+    console.error("通知の送信に失敗しました", e);
+  }
+}
+
 function register(ctx: ContentScriptContext) {
   const [container] = document.getElementsByClassName("@container/thread");
   if (container == null) {
@@ -45,32 +67,7 @@ function register(ctx: ContentScriptContext) {
           oldClassList.includes("result-streaming") &&
           !target.classList.contains("result-streaming")
         ) {
-          if (document.hasFocus()) {
-            return;
-          }
-          try {
-            // 通知設定を確認
-            const { notificationsEnabled = true, soundEnabled = true } =
-              await browser.storage.sync.get([
-                "notificationsEnabled",
-                "soundEnabled",
-              ]);
-
-            if (soundEnabled) {
-              // 通知音を再生
-              await notificationSound.play().catch((e) => {
-                console.error("通知音の再生に失敗しました", e);
-              });
-            }
-
-            if (notificationsEnabled) {
-              await browser.runtime.sendMessage("notification");
-            }
-
-            console.log("通知を送信しました");
-          } catch (e) {
-            console.error("失敗", e);
-          }
+          await notify(notificationSound);
         }
       }
     });
