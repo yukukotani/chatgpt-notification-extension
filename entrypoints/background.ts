@@ -15,7 +15,7 @@ export default defineBackground(() => {
 
     browser.notifications.create(notificationId, {
       title: "ChatGPT",
-      message: "メッセージが届きました",
+      message: "Received a message",
       type: "basic",
       iconUrl: browser.runtime.getURL("/icon.png"),
     });

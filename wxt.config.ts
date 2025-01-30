@@ -7,6 +7,8 @@ export default defineConfig({
   modules: ["@wxt-dev/module-react", "@wxt-dev/auto-icons"],
   manifest: {
     name: "ChatGPT Notification",
+    description:
+      "Web extension to show browser notification or play sound on incoming streaming message is completed on ChatGPT.",
     permissions: ["notifications", "tabs", "storage"],
     web_accessible_resources: [
       {
