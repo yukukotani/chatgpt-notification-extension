@@ -23,7 +23,7 @@ function SettingsForm({
           checked={settings.notificationsEnabled}
           onChange={(e) => onUpdate("notificationsEnabled", e.target.checked)}
         />
-        <span className="toggle-text">通知を有効にする</span>
+        <span className="toggle-text">デスクトップ通知を表示</span>
       </label>
       <label className="toggle-label">
         <input
@@ -32,7 +32,7 @@ function SettingsForm({
           checked={settings.soundEnabled}
           onChange={(e) => onUpdate("soundEnabled", e.target.checked)}
         />
-        <span className="toggle-text">通知音を有効にする</span>
+        <span className="toggle-text">通知音を鳴らす</span>
       </label>
     </div>
   );
