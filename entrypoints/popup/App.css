@@ -65,3 +65,7 @@
     background-color: #3b82f6;
   }
 }
+
+.toggle-label + .toggle-label {
+  margin-top: 1rem;
+}

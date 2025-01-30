@@ -50,15 +50,23 @@ function register(ctx: ContentScriptContext) {
           }
           try {
             // 通知設定を確認
-            const { notificationsEnabled = true } =
-              await browser.storage.sync.get("notificationsEnabled");
-            if (notificationsEnabled) {
+            const { notificationsEnabled = true, soundEnabled = true } =
+              await browser.storage.sync.get([
+                "notificationsEnabled",
+                "soundEnabled",
+              ]);
+
+            if (soundEnabled) {
               // 通知音を再生
               await notificationSound.play().catch((e) => {
                 console.error("通知音の再生に失敗しました", e);
               });
+            }
+
+            if (notificationsEnabled) {
               await browser.runtime.sendMessage("notification");
             }
+
             console.log("通知を送信しました");
           } catch (e) {
             console.error("失敗", e);
