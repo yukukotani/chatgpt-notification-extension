@@ -9,7 +9,7 @@ export default defineConfig({
     name: "ChatGPT Notification",
     description:
       "Web extension to show browser notification or play sound on incoming streaming message is completed on ChatGPT.",
-    permissions: ["notifications", "tabs", "storage"],
+    permissions: ["notifications", "storage"],
     web_accessible_resources: [
       {
         resources: ["sound.mp3"],
