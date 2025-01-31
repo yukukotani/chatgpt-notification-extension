@@ -1,3 +1,5 @@
-# WXT + React
+# chatgpt-notification-extension
 
-This template should help get you started developing with React in WXT.
+Web extension to show browser notification or play sound on incoming streaming message is completed on ChatGPT.
+
+https://chromewebstore.google.com/detail/chatgpt-notification/lecidplbjjmkjnnmoamcbbmaeoakjnjm
